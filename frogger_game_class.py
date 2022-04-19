@@ -136,6 +136,18 @@ class Obstacle(pygame.sprite.Sprite):
             screen.blit(self.image2, (self.pothole_x, self.pothole_y))
 
 
+"""
+    Lane Class
+        - This class is responsible for keeping track of
+            - The position of the lane
+            - THe obstacles in the lane
+            - The type of the lane
+        - This class is responsible for drawing
+            - The lane itself
+            - Calling the draw method on the obstacles
+"""
+
+
 class Lane(pygame.sprite.Sprite):
     def __init__(self, pos, type="safe", obsCnt=0, level=1):
         super().__init__()
@@ -316,6 +328,16 @@ class Frog(pygame.sprite.Sprite):
         screen.blit(self.image, (self.pos_x, self.pos_y))
 
 
+"""
+    Gameplay Class
+        - This class is responsible for...
+            - Displaying the start screen
+            - Creating the lanes based on the current level
+            - Creating the initial score object
+            - Displaying the gameover screen
+"""
+
+
 class Game:
     def __init__(self):
         pygame.init()
@@ -330,6 +352,12 @@ class Game:
 
         pygame.key.set_repeat(0, 0)
         self.frog = Frog(640, 56)
+
+    """
+        Draw Lanes Function
+            - This function is responsible for drawing the lanes based on the current level
+            - This function "randomizes" the type of lane to be drawn
+    """
 
     def makeLanes(self):
         laneCount = self.score.level
@@ -369,6 +397,11 @@ class Game:
 
             self.lanes.add(Lane(counter, "finish"))
 
+    """
+        Game Over Function
+            - This function is responsible for displaying the game over screen, and allowing the player to 
+    """
+
     def gameOver(self):
         self.screen.fill((202, 204, 207))
 
@@ -396,6 +429,11 @@ class Game:
             self.screen.blit(restartText, (500, 300))
             pygame.display.flip()
             self.clock.tick(30)
+
+    """
+        Intro Function
+            - This function is responsible for drawing the intro screen
+    """
 
     def intro(self):
         self.screen.fill((202, 204, 207))
@@ -450,6 +488,11 @@ class Game:
             self.screen.blit(startText, (500, 300))
             pygame.display.flip()
             self.clock.tick(30)
+
+    """
+        Startup Function
+            - This is the main startup function for the program, running this function allows the game to be played
+    """
 
     def startUp(self):
         while True:
