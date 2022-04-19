@@ -1,6 +1,15 @@
 import pygame, sys
 import random
 
+"""
+    Score Class
+        - This class is responsible for keeping track of...
+            - The score
+            - The level
+            - The gameover condition
+        - This class is also responsible for drawing the remaining lives, and level on the screen
+"""
+
 
 class Score(pygame.sprite.Sprite):
     def __init__(self, screen):
@@ -41,9 +50,26 @@ class Score(pygame.sprite.Sprite):
     def advance_level(self):
         self.level += 1
 
+    """
+        Check for Gameover
+            - This function is responsible for checking to see if the game is over or not
+            - The game is over when the lives reach 0
+    """
+
     def gameOverCheck(self):
         if self.lives <= 0:
             return True
+
+
+"""
+    Obstacle Class
+        - This class is responsible for keeping track of
+            - The obstacles' position
+            - The obstacles' velocity
+            - The obstacles' collision with the character
+        - This class is responsible for drawing
+            - The obstacles in the lanes
+"""
 
 
 class Obstacle(pygame.sprite.Sprite):
@@ -85,6 +111,12 @@ class Obstacle(pygame.sprite.Sprite):
             self.rect = self.image.get_rect()
         self.rect.center = [self.pos_x, self.pos_y]
 
+    """
+        Update Obstacles
+            - This is the function we call to update the position of an obstacle based on its velocity
+            - This function also handles the obstacles running off the screen
+    """
+
     def update(self, screen):
         # Updating the position based on the set velocity
         self.pos_x += self.velocity
@@ -116,42 +148,30 @@ class Lane(pygame.sprite.Sprite):
         self.obstacles = []
         self.level = level
 
+        # Check if we need obstacles, because start and finish don't have obstacles
         if self.obsCnt > 0:
             for i in range(obsCnt):
                 self.obstacles.append(Obstacle((pos * 128), self.type, self.level))
 
+        # Drawing lane based on type of lane we need
+
         if self.type == "car":
-            self.color = (148, 153, 149)
             self.image = pygame.image.load("sprites/road.png")
             self.rect = self.image.get_rect()
             self.rect.topleft = [self.pos_x, self.pos_y]
         elif self.type == "water":
-            self.color = (0, 154, 219)
             self.image = pygame.image.load("sprites/water.png")
             self.rect = self.image.get_rect()
             self.rect.topleft = [self.pos_x, self.pos_y]
         elif self.type == "safe":
-            self.color = (0, 145, 7)
-
             self.image = pygame.image.load("sprites/bedroom.png")
             self.rect = self.image.get_rect()
             self.rect.topleft = [self.pos_x, self.pos_y]
 
-            # self.image = pygame.Surface([self.width, self.height])
-            # self.image.fill(self.color)
-            # self.rect = self.image.get_rect()
-            # self.rect.topleft = [self.pos_x, self.pos_y]
         elif self.type == "finish":
-            self.color = (212, 192, 11)
-
             self.image = pygame.image.load("sprites/gm_background.png")
             self.rect = self.image.get_rect()
             self.rect.topleft = [self.pos_x, self.pos_y]
-
-            # self.image = pygame.Surface([self.width, self.height])
-            # self.image.fill(self.color)
-            # self.rect = self.image.get_rect()
-            # self.rect.topleft = [self.pos_x, self.pos_y]
 
     """
         Obstacle Position Updating
@@ -217,6 +237,16 @@ class Lane(pygame.sprite.Sprite):
         return finish_flag
 
 
+"""
+    Frog Class
+        - This class is responsible for keeping track of...
+            - The position of the frog
+            - If the frog is attached to a boat
+        - This class is responsible for drawing...
+            - The character in its current position by calling the update method
+"""
+
+
 class Frog(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__()
@@ -230,18 +260,41 @@ class Frog(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = [self.pos_x, self.pos_y]
 
+    """
+        Move Function
+            - This function is responsible for moving the frog
+    """
+
     def move(self, delta_x, delta_y):
         self.pos_x += delta_x * 128
         self.pos_y += delta_y * 128
         self.rect.center = [self.pos_x, self.pos_y]
 
+    """
+        Attach Function
+            - This function is responsible for attaching the character to a boat obstacle
+    """
+
     def attach(self, obstacle):
         self.attached = obstacle
+
+    """
+        Reset Function
+            - This function is responsible for resetting the character back to the start
+            - This function also dettaches the character from any obstacles
+    """
 
     def reset(self):
         self.pos_x = self.pos_x_init
         self.pos_y = self.pos_y_init
         self.attach(None)
+
+    """
+        Update Function
+            - This function is responsible for updating the position of the character
+            - This function also takes care of when the character tries to run off of the screen
+            - This function also takes care of re-drawing the character on the screen
+    """
 
     def update(self, screen, screenHeight):
         if self.attached:
